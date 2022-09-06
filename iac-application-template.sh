@@ -50,8 +50,8 @@ for module_info in ${DEDUPLICATED_MODULES}; do
     echo "${OUTPUT}"
   fi
 done
-if [ "${ERROR_OCCURED}" == true ]; then
 
+if [ "${ERROR_OCCURED}" == true ]; then
   echo "${OUTPUT}"
   exit 1
 fi
