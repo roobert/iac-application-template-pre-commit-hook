@@ -1,0 +1,6 @@
+-   id: iac-application-template
+    name: IAC Application Templating
+    description: This hook runs the IAC application templating script
+    entry: ./iac-application-template.sh
+    language: script
+    types: [file]
