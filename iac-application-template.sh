@@ -28,7 +28,7 @@ for file in "$@"; do
   APP=$(cut -d '/' -f 3 <<< "${file}")
   VERSION=$(cut -d '/' -f 4 <<< "${file}")
 
-  OUTPUT=$("${IAC_TEMPLATE}" -a "${APP}" -v "${VERSION}")
+  OUTPUT=$("${IAC_TEMPLATE}" -a "${APP}" -v "${VERSION}" 2>&1)
 
   # shellcheck disable=SC2181
   if [[ $? -ne 0 ]]; then
