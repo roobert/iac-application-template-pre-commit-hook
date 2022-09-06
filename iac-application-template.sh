@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -eo pipefail
 
 if ! test -d "${IAC_BIN_DIR}"; then
   echo ERROR: IAC bin dir not found
@@ -8,6 +8,8 @@ if ! test -d "${IAC_BIN_DIR}"; then
   echo "Please set IAC_BIN_DIR!"
   exit 1
 fi
+
+set -u
 
 if test -x "${IAC_BIN_DIR}/template.py"; then
   IAC_TEMPLATE="${IAC_BIN_DIR}/template.py"
