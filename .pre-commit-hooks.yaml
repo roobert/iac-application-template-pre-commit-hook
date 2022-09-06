@@ -4,3 +4,4 @@
     entry: ./iac-application-template.sh
     language: script
     types: [file]
+    require_serial: true

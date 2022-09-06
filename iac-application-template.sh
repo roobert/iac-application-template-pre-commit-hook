@@ -21,7 +21,7 @@ fi
 MODULES=""
 
 for file in "$@"; do
-  if ! grep --color=never -E "^module\/app\/([^\/]*)\/([^\/]*)\/.*$" <<< "${file}"; then
+  if ! grep --color=never -E "^module\/app\/([^\/]*)\/([^\/]*)\/.*$" <<< "${file}" > /dev/null 2>&1; then
     continue
   fi
 
