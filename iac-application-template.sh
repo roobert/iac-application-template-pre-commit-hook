@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -eo pipefail
+set -o pipefail
 
 if ! test -d "${IAC_BIN_DIR}"; then
   echo ERROR: IAC bin dir not found
@@ -18,20 +18,31 @@ else
   exit 1
 fi
 
-ERROR_OCCURED="false"
+MODULES=""
 
 for file in "$@"; do
-  if ! grep -E "^module\/app\/([^\/]*)\/([^\/]*)\/.*$" <<< "${file}"; then
+  if ! grep --color=never -E "^module\/app\/([^\/]*)\/([^\/]*)\/.*$" <<< "${file}"; then
     continue
   fi
 
   APP=$(cut -d '/' -f 3 <<< "${file}")
   VERSION=$(cut -d '/' -f 4 <<< "${file}")
 
+  MODULES="${APP}:${VERSION}\n${MODULES}"
+done
+
+DEDUPLICATED_MODULES=$(echo -e "${MODULES}" | sort -u)
+
+ERROR_OCCURED="false"
+
+for module_info in ${DEDUPLICATED_MODULES}; do
+  APP=$(cut -d ':' -f 1 <<< "${module_info}")
+  VERSION=$(cut -d ':' -f 2 <<< "${module_info}")
+
   OUTPUT=$("${IAC_TEMPLATE}" -a "${APP}" -v "${VERSION}" 2>&1)
 
   # shellcheck disable=SC2181
-  if [[ $? -ne 0 ]]; then
+  if [ $? -ne 0 ]; then
     ERROR_OCCURED="true"
     echo
     echo "==> file: ${file}"
@@ -39,7 +50,8 @@ for file in "$@"; do
     echo "${OUTPUT}"
   fi
 done
+if [ "${ERROR_OCCURED}" == true ]; then
 
-if [[ "${ERROR_OCCURED}" == "true" ]]; then
+  echo "${OUTPUT}"
   exit 1
 fi
