@@ -18,6 +18,8 @@ else
   exit 1
 fi
 
+ERROR_OCCURED="false"
+
 for file in "$@"; do
   if ! grep -E "^module\/app\/([^\/]*)\/([^\/]*)\/.*$" <<< "${file}"; then
     continue
@@ -26,5 +28,18 @@ for file in "$@"; do
   APP=$(cut -d '/' -f 3 <<< "${file}")
   VERSION=$(cut -d '/' -f 4 <<< "${file}")
 
-  "${IAC_TEMPLATE}" -a "${APP}" -v "${VERSION}"
+  OUTPUT=$("${IAC_TEMPLATE}" -a "${APP}" -v "${VERSION}")
+
+  # shellcheck disable=SC2181
+  if [[ $? -ne 0 ]]; then
+    ERROR_OCCURED="true"
+    echo
+    echo "==> file: ${file}"
+    echo
+    echo "${OUTPUT}"
+  fi
 done
+
+if [[ "${ERROR_OCCURED}" == "true" ]]; then
+  exit 1
+fi
